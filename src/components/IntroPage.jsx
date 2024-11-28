@@ -1,16 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const IntroPage = ({ onEnter }) => {
   const [isExiting, setIsExiting] = useState(false);
+  const mainCanvasRef = useRef(null);
+  const secondaryCanvasRef = useRef(null);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    const drawText = (canvas, text, fontSize, delay) => {
+      const ctx = canvas.getContext('2d');
+      ctx.font = `${fontSize}px 'Loved by the King', cursive`;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = ctx.fillStyle = '#FFF';
+
+      const textWidth = ctx.measureText(text).width;
+      const x = (canvas.width - textWidth) / 2;
+      const y = canvas.height / 2 + fontSize / 3;
+
+      let i = 0;
+
+      const drawCharacter = () => {
+        if (i < text.length) {
+          ctx.fillText(text[i], x + ctx.measureText(text.slice(0, i)).width, y);
+          i++;
+          setTimeout(drawCharacter, delay);
+        }
+      };
+
+      drawCharacter();
+    };
+
+    drawText(mainCanvasRef.current, 'Merri', 80, 200);
+    drawText(secondaryCanvasRef.current, 'Loves you ', 40, 150);
+  }, []);
 
   const handleEnter = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
     setIsExiting(true);
-    setTimeout(onEnter, 1000); // Matches fade-out duration
+    setTimeout(onEnter, 1000);
   };
 
   return (
     <div
-      className={`relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-b 
+      className={`relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b 
                   from-pink-300 via-yellow-200 to-white transition-opacity duration-1000
                   ${isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
     >
@@ -34,24 +68,19 @@ const IntroPage = ({ onEnter }) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center">
-        <h1 className="text-8xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-yellow-500 drop-shadow-lg">
-          Merri
-        </h1>
-        <p className="text-4xl font-medium text-pink-700 mb-8 drop-shadow-md">Loves you 💖</p>
+      <div className="relative z-10 text-center space-y-4">
+        <canvas ref={mainCanvasRef} width={640} height={150} className="mb-4" />
+        <canvas ref={secondaryCanvasRef} width={640} height={100} className="mb-8" />
         <button
           onClick={handleEnter}
-          className="relative px-12 py-4 text-lg font-bold rounded-full bg-gradient-to-r 
-                     from-yellow-400 via-pink-400 to-red-400 hover:from-yellow-500 hover:to-red-500
-                     text-white shadow-lg hover:shadow-2xl transition-transform transform-gpu 
-                     hover:scale-110 active:scale-95 focus:outline-none"
+          className="neuromorphic-button px-6 py-2 text-md font-bold rounded-full text-gray-700"
         >
-          <span
-            className="absolute inset-0 bg-white opacity-20 blur-xl rounded-full animate-pulse"
-          ></span>
-          Enter Merri's World
+          <p className="text-center ">Enter Merri's World</p>
         </button>
       </div>
+
+      {/* Audio Element */}
+      <audio ref={audioRef} src="/path/to/click.wav" preload="auto" />
 
       {/* Custom Animations */}
       <style jsx>{`
@@ -65,6 +94,20 @@ const IntroPage = ({ onEnter }) => {
           100% {
             transform: translateY(0) scale(1);
           }
+        }
+
+        .neuromorphic-button {
+          background: #e0e0e0;
+          box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+          transition: all 0.2s ease-in-out;
+        }
+
+        .neuromorphic-button:hover {
+          box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+        }
+
+        .neuromorphic-button:active {
+          box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
         }
       `}</style>
     </div>

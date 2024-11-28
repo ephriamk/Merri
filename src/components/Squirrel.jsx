@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OpenAI from 'openai';
+import '../App.css';
 
 const Squirrel = () => {
   const [currentAnimation, setCurrentAnimation] = useState('idle');
@@ -113,7 +114,7 @@ const Squirrel = () => {
       /* Wave Animation */
       @keyframes waveArm {
         0%, 100% { transform: rotate(0); }
-        25% { transform: rotate(-45deg); }
+        25% { transform: rotate(-105deg); }
         75% { transform: rotate(-30deg); }
       }
       @keyframes waveBody {
@@ -384,6 +385,7 @@ Return only the CSS without any markdown or explanations.`;
   };
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-4 sm:p-8">
+    <h1 className="text-center text-2xl font-bold mb-4 merri-font">Merri's World</h1>
       <div className="max-w-4xl mx-auto w-full">
         {/* API Key Modal */}
         {showApiKeyInput && (
@@ -417,104 +419,6 @@ Return only the CSS without any markdown or explanations.`;
             </div>
           </div>
         )}
-
-        {/* AI Animation Input */}
-        <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-            <h2 className="text-xl font-bold">Create Animation</h2>
-            <button
-              onClick={() => setShowApiKeyInput(true)}
-              disabled={isGenerating}
-              className="text-purple-500 hover:text-purple-700 disabled:text-gray-400 transition-colors"
-            >
-              Configure API Key
-            </button>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="text"
-              value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-              placeholder="Try: 'do a backflip', 'run in circles', 'dance with joy'..."
-              disabled={isGenerating}
-              className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-300 
-                       disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
-            />
-            <button
-              onClick={handleAiAnimation}
-              disabled={isGenerating}
-              className="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 
-                       disabled:bg-gray-400 disabled:cursor-not-allowed transition-all
-                       transform active:scale-95 whitespace-nowrap"
-            >
-              {isGenerating ? 'Generating...' : 'Generate'}
-            </button>
-          </div>
-          {errorMessage && (
-            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
-              {errorMessage}
-            </div>
-          )}
-        </div>
-
-        {/* Animation Controls */}
-        <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 mb-6">
-          <h3 className="text-lg font-bold mb-3 text-center">Merri says hi</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {['idle', 'happy', 'wave', 'dance', 'excited'].map((anim) => (
-              <button
-                key={anim}
-                onClick={() => setCurrentAnimation(anim)}
-                disabled={isGenerating}
-                className={`p-4 rounded-lg text-white font-medium transition-all
-                          transform active:scale-95 ${
-                  currentAnimation === anim
-                    ? 'bg-blue-600 ring-4 ring-blue-200'
-                    : 'bg-blue-500 hover:bg-blue-600'
-                } disabled:bg-gray-400 disabled:cursor-not-allowed`}
-              >
-                {anim.charAt(0).toUpperCase() + anim.slice(1)}
-              </button>
-            ))}
-          </div>
-
-          {customAnimations.length > 0 && (
-            <>
-              <h3 className="text-lg font-bold mt-6 mb-3">Custom Animations</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {customAnimations.map((anim) => (
-                  <div key={anim.id} className="relative group">
-                    <button
-                      onClick={() => setCurrentAnimation(anim.id)}
-                      disabled={isGenerating}
-                      className={`w-full p-4 rounded-lg text-white font-medium transition-all
-                                transform active:scale-95 ${
-                        currentAnimation === anim.id
-                          ? 'bg-purple-600 ring-4 ring-purple-200'
-                          : 'bg-purple-500 hover:bg-purple-600'
-                      } disabled:bg-gray-400 disabled:cursor-not-allowed`}
-                    >
-                      {anim.name}
-                    </button>
-                    <button
-                      onClick={() => handleDeleteAnimation(anim.id)}
-                      disabled={isGenerating}
-                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white 
-                               hover:bg-red-600 flex items-center justify-center transform
-                               transition-all opacity-0 group-hover:opacity-100
-                               disabled:bg-gray-400 disabled:cursor-not-allowed"
-                      aria-label="Delete animation"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Squirrel Display */}
         <div className={`bg-white rounded-xl shadow-xl p-4 sm:p-8 mb-6 ${currentAnimation}`}>
           <div className="squirrel-container">
             <svg className="squirrel w-full h-full" viewBox="0 0 200 300">
@@ -630,6 +534,105 @@ Return only the CSS without any markdown or explanations.`;
             </svg>
           </div>
         </div>
+
+       
+
+        {/* Animation Controls */}
+        <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {['idle', 'happy', 'wave', 'dance', 'excited'].map((anim) => (
+              <button
+                key={anim}
+                onClick={() => setCurrentAnimation(anim)}
+                disabled={isGenerating}
+                className={`p-4 rounded-lg text-white font-medium transition-all
+                          transform active:scale-95 ${
+                  currentAnimation === anim
+                    ? 'bg-blue-600 ring-4 ring-blue-200'
+                    : 'bg-blue-500 hover:bg-blue-600'
+                } disabled:bg-gray-400 disabled:cursor-not-allowed`}
+              >
+                {anim.charAt(0).toUpperCase() + anim.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {customAnimations.length > 0 && (
+            <>
+              <h3 className="text-lg font-bold mt-6 mb-3">Custom Animations</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {customAnimations.map((anim) => (
+                  <div key={anim.id} className="relative group">
+                    <button
+                      onClick={() => setCurrentAnimation(anim.id)}
+                      disabled={isGenerating}
+                      className={`w-full p-4 rounded-lg text-white font-medium transition-all
+                                transform active:scale-95 ${
+                        currentAnimation === anim.id
+                          ? 'bg-purple-600 ring-4 ring-purple-200'
+                          : 'bg-purple-500 hover:bg-purple-600'
+                      } disabled:bg-gray-400 disabled:cursor-not-allowed`}
+                    >
+                      {anim.name}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteAnimation(anim.id)}
+                      disabled={isGenerating}
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white 
+                               hover:bg-red-600 flex items-center justify-center transform
+                               transition-all opacity-0 group-hover:opacity-100
+                               disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      aria-label="Delete animation"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+         {/* AI Animation Input */}
+         <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+            <h2 className="text-xl font-bold">Create Animation</h2>
+            <button
+              onClick={() => setShowApiKeyInput(true)}
+              disabled={isGenerating}
+              className="text-purple-500 hover:text-purple-700 disabled:text-gray-400 transition-colors"
+            >
+              Configure API Key
+            </button>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+              type="text"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              placeholder="Try: 'do a backflip', 'run in circles', 'dance with joy'..."
+              disabled={isGenerating}
+              className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-300 
+                       disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
+            />
+            <button
+              onClick={handleAiAnimation}
+              disabled={isGenerating}
+              className="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 
+                       disabled:bg-gray-400 disabled:cursor-not-allowed transition-all
+                       transform active:scale-95 whitespace-nowrap"
+            >
+              {isGenerating ? 'Generating...' : 'Generate'}
+            </button>
+          </div>
+          {errorMessage && (
+            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+              {errorMessage}
+            </div>
+          )}
+        </div>
+
+        {/* Squirrel Display */}
+       
 
         {/* Talk Toggle */}
         {/* <div className="mt-6 flex justify-center">
