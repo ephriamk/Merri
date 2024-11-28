@@ -459,7 +459,7 @@ Return only the CSS without any markdown or explanations.`;
 
         {/* Animation Controls */}
         <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 mb-6">
-          <h3 className="text-lg font-bold mb-3">Default Animations</h3>
+          <h3 className="text-lg font-bold mb-3 text-center">Merri says hi</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {['idle', 'happy', 'wave', 'dance', 'excited'].map((anim) => (
               <button
