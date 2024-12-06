@@ -6,56 +6,14 @@ const App = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [volume, setVolume] = useState(0.2);
-  const [audioLoaded, setAudioLoaded] = useState(false);
   const audioRef = useRef(null);
 
-  // Function to load audio with both local and production paths
-  const loadAudio = async () => {
-    try {
-      // Try production URL first (assuming the file is in public folder)
-      const audioUrl = '/merri.mp3';
-      const response = await fetch(audioUrl);
-      
-      if (response.ok) {
-        if (audioRef.current) {
-          audioRef.current.src = audioUrl;
-          audioRef.current.volume = volume;
-          setAudioLoaded(true);
-        }
-      } else {
-        // Fallback to local development path
-        if (audioRef.current) {
-          audioRef.current.src = '/src/assets/merri.mp3';
-          audioRef.current.volume = volume;
-          setAudioLoaded(true);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading audio:', error);
-    }
-  };
-
   useEffect(() => {
-    loadAudio();
-  }, []);
-
-  useEffect(() => {
-    if (audioLoaded && audioRef.current) {
+    // Set initial volume
+    if (audioRef.current) {
       audioRef.current.volume = volume;
-      
-      const playAttempt = async () => {
-        try {
-          await audioRef.current.play();
-          setIsPlaying(true);
-        } catch (err) {
-          console.log('Autoplay prevented:', err);
-          setIsPlaying(false);
-        }
-      };
-
-      playAttempt();
     }
-  }, [audioLoaded]);
+  }, []);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -77,64 +35,60 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen relative">
-      {/* Audio Player */}
-      <audio ref={audioRef} loop>
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Audio element with relative path */}
+      <audio ref={audioRef} loop src="./merri.mp3">
         Your browser does not support the audio element.
       </audio>
 
+      {/* Main content */}
       {showIntro ? (
         <IntroPage onEnter={() => setShowIntro(false)} />
       ) : (
         <Squirrel />
       )}
 
-      {/* Audio Controls */}
-      <div className="fixed bottom-4 right-4 flex flex-col items-center gap-2 z-50">
-        <button
-          onClick={toggleAudio}
-          className="group relative w-12 h-12 rounded-full bg-pink-500 text-white shadow-lg 
-                   hover:scale-110 transform transition-all flex items-center justify-center"
-          aria-label={isPlaying ? 'Pause music' : 'Play music'}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`w-6 h-6 transition-colors ${isPlaying ? 'text-white' : 'text-white'}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+      {/* Floating controls - repositioned for better visibility */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 flex justify-center sm:justify-end">
+        <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-lg flex items-center gap-3">
+          {/* Play/Pause Button */}
+          <button
+            onClick={toggleAudio}
+            className="w-10 h-10 rounded-full bg-pink-500 text-white flex items-center justify-center 
+                     hover:bg-pink-600 transition-all shadow-md"
+            aria-label={isPlaying ? 'Pause music' : 'Play music'}
           >
             {isPlaying ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
             ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 10v4a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-              />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+              </svg>
             )}
-          </svg>
-          <div className="absolute inset-0 bg-pink-500 opacity-50 rounded-full blur-xl transition-opacity 
-                        group-hover:opacity-75" />
-        </button>
+          </button>
 
-        {/* Volume Slider with improved styling */}
-        <div className="relative group">
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="w-20 h-2 rounded-lg appearance-none cursor-pointer bg-pink-200
-                     accent-pink-500 hover:accent-pink-600 transition-all"
-            aria-label="Volume control"
-          />
-          <div className="absolute left-0 right-0 -bottom-6 opacity-0 group-hover:opacity-100 
-                        transition-opacity text-xs text-center text-pink-500 font-medium">
-            {Math.round(volume * 100)}%
+          {/* Volume Slider */}
+          <div className="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-pink-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
+            </svg>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="w-20 h-1.5 rounded-full bg-pink-200 appearance-none cursor-pointer
+                       [&::-webkit-slider-thumb]:appearance-none
+                       [&::-webkit-slider-thumb]:h-3
+                       [&::-webkit-slider-thumb]:w-3
+                       [&::-webkit-slider-thumb]:rounded-full
+                       [&::-webkit-slider-thumb]:bg-pink-500"
+              aria-label="Volume control"
+            />
           </div>
         </div>
       </div>
